@@ -9,7 +9,7 @@ public class Truck : ITransport
 {
     public void Deliver()
     {
-        Console.WriteLine("Dostarczenie ładunku drogą lądową w pudełku");
+        Console.WriteLine("Dostarczenie ladunku droga ladowa w pudelku");
     }
 }
 
@@ -17,16 +17,15 @@ public class Ship : ITransport
 {
     public void Deliver()
     {
-        Console.WriteLine("Dostarczenie ładunku drogą morską na statku");
+        Console.WriteLine("Dostarczenie ladunku droga morska na statku");
     }
 }
 
-// Dodatkowy typ, aby spełnić warunek min. 3 typów w Main
 public class Drone : ITransport
 {
     public void Deliver()
     {
-        Console.WriteLine("Dostarczenie ładunku drogą lotniczą przez drona");
+        Console.WriteLine("Dostarczenie ladunku droga lotniczą przez drona");
     }
 }
 
@@ -74,8 +73,6 @@ class Program
         Logistics roadLogistics = new RoadLogistics();
         Logistics seaLogistics = new SeaLogistics();
         Logistics airLogistics = new AirLogistics();
-
-        // Polimorficzne wywołanie dla 3 różnych typów
         roadLogistics.PlanDelivery();
         seaLogistics.PlanDelivery();
         airLogistics.PlanDelivery();
