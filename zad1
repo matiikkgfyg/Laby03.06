@@ -1,0 +1,83 @@
+using System;
+
+public interface ITransport
+{
+    void Deliver();
+}
+
+public class Truck : ITransport
+{
+    public void Deliver()
+    {
+        Console.WriteLine("Dostarczenie ładunku drogą lądową w pudełku");
+    }
+}
+
+public class Ship : ITransport
+{
+    public void Deliver()
+    {
+        Console.WriteLine("Dostarczenie ładunku drogą morską na statku");
+    }
+}
+
+// Dodatkowy typ, aby spełnić warunek min. 3 typów w Main
+public class Drone : ITransport
+{
+    public void Deliver()
+    {
+        Console.WriteLine("Dostarczenie ładunku drogą lotniczą przez drona");
+    }
+}
+
+public abstract class Logistics
+{
+    protected abstract ITransport CreateTransport();
+
+    public void PlanDelivery()
+    {
+        ITransport transport = CreateTransport();
+        transport.Deliver();
+    }
+}
+
+public class RoadLogistics : Logistics
+{
+    protected override ITransport CreateTransport()
+    {
+        return new Truck();
+    }
+}
+
+public class SeaLogistics : Logistics
+{
+    protected override ITransport CreateTransport()
+    {
+        return new Ship();
+    }
+}
+
+public class AirLogistics : Logistics
+{
+    protected override ITransport CreateTransport()
+    {
+        return new Drone();
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("=== SYSTEM LOGISTYCZNY ===");
+        
+        Logistics roadLogistics = new RoadLogistics();
+        Logistics seaLogistics = new SeaLogistics();
+        Logistics airLogistics = new AirLogistics();
+
+        // Polimorficzne wywołanie dla 3 różnych typów
+        roadLogistics.PlanDelivery();
+        seaLogistics.PlanDelivery();
+        airLogistics.PlanDelivery();
+    }
+}
