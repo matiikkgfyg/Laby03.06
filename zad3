@@ -1,0 +1,108 @@
+using System;
+
+public enum Severity
+{
+    Low,
+    Medium,
+    High
+}
+
+public class Ticket
+{
+    public int Id { get; set; }
+    public string Description { get; set; }
+    public Severity Severity { get; set; }
+    public decimal Cost { get; set; }
+}
+
+public abstract class SupportHandler
+{
+    private SupportHandler _nextHandler;
+
+    public SupportHandler SetNext(SupportHandler handler)
+    {
+        _nextHandler = handler;
+        return handler; // Pozwala na "chaining", np. handler1.SetNext(handler2).SetNext(handler3)
+    }
+
+    public virtual void HandleTicket(Ticket ticket)
+    {
+        if (_nextHandler != null)
+        {
+            _nextHandler.HandleTicket(ticket);
+        }
+    }
+}
+
+public class Level1Support : SupportHandler
+{
+    public override void HandleTicket(Ticket ticket)
+    {
+        if (ticket.Severity == Severity.Low)
+        {
+            Console.WriteLine($"[Level 1 - Konsultant] Rozwiązano problem: {ticket.Description} (Zgłoszenie #{ticket.Id})");
+        }
+        else
+        {
+            Console.WriteLine($"[Level 1 - Konsultant] Brak uprawnień do zgłoszenia #{ticket.Id}. Przekazuję dalej...");
+            base.HandleTicket(ticket);
+        }
+    }
+}
+
+public class Level2Support : SupportHandler
+{
+    public override void HandleTicket(Ticket ticket)
+    {
+        if (ticket.Severity == Severity.Medium || ticket.Cost < 1000m)
+        {
+            Console.WriteLine($"[Level 2 - Inżynier] Rozwiązano problem: {ticket.Description} (Zgłoszenie #{ticket.Id}, Koszt: {ticket.Cost} PLN)");
+        }
+        else
+        {
+            Console.WriteLine($"[Level 2 - Inżynier] Problem zbyt trudny lub za drogi (Zgłoszenie #{ticket.Id}). Przekazuję do Dyrektora...");
+            base.HandleTicket(ticket);
+        }
+    }
+}
+
+public class DirectorSupport : SupportHandler
+{
+    public override void HandleTicket(Ticket ticket)
+    {
+        // Dyrektor rozwiązuje wszystko, co do niego trafi
+        Console.WriteLine($"[Level 3 - Dyrektor IT] Ostatecznie zamknięto zgłoszenie: {ticket.Description} (Zgłoszenie #{ticket.Id}, Koszt: {ticket.Cost} PLN)");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("=== SYSTEM HELPDESK ===");
+
+        // Inicjalizacja ogniw łańcucha
+        SupportHandler consultant = new Level1Support();
+        SupportHandler engineer = new Level2Support();
+        SupportHandler director = new DirectorSupport();
+
+        // Budowa łańcucha
+        consultant.SetNext(engineer).SetNext(director);
+
+        // Zgłoszenia testowe
+        var tickets = new[]
+        {
+            new Ticket { Id = 1, Description = "Reset hasła do poczty", Severity = Severity.Low, Cost = 0m },
+            new Ticket { Id = 2, Description = "Instalacja oprogramowania biurowego", Severity = Severity.Medium, Cost = 150m },
+            new Ticket { Id = 3, Description = "Awaria serwera bazy danych", Severity = Severity.High, Cost = 500m },
+            new Ticket { Id = 4, Description = "Zakup nowych stacji roboczych (min. 4)", Severity = Severity.High, Cost = 15000m }
+        };
+
+        // Puszczenie zgłoszeń przez łańcuch
+        foreach (var ticket in tickets)
+        {
+            Console.WriteLine($"\n--- Zgłoszenie #{ticket.Id} ---");
+            consultant.HandleTicket(ticket);
+        }
+    }
+}
