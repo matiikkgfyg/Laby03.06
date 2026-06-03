@@ -57,3 +57,4 @@ class Program
         adapterProcessor.ProcessPayment("PiotrKaminski", 399.99);
     }
 }
+}
