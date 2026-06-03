@@ -1,0 +1,62 @@
+using System;
+
+public interface IPaymentProcessor
+{
+    void ProcessPayment(string user, double amount);
+}
+
+public class InternalPaymentProcessor : IPaymentProcessor
+{
+    public void ProcessPayment(string user, double amount)
+    {
+        Console.WriteLine($"[Stary System] Przetworzono płatność: Użytkownik: {user}, Kwota: {amount} PLN");
+    }
+}
+
+// Klasa zewnętrznej biblioteki (Adaptee)
+public class ExternalStripeService
+{
+    public void MakeTransaction(float totalCurrency, string accountId, bool forceSca)
+    {
+        Console.WriteLine($"[Stripe API] Transakcja zakończona. AccountId: {accountId}, Kwota: {totalCurrency}, SCA: {forceSca}");
+    }
+}
+
+// Adapter
+public class StripeAdapter : IPaymentProcessor
+{
+    private readonly ExternalStripeService _stripeService;
+
+    public StripeAdapter(ExternalStripeService stripeService)
+    {
+        _stripeService = stripeService;
+    }
+
+    public void ProcessPayment(string user, double amount)
+    {
+        // Tłumaczenie parametrów
+        float totalCurrency = (float)amount;
+        string accountId = user;
+        bool forceSca = true; // Wartość domyślna dla SCA
+        
+        _stripeService.MakeTransaction(totalCurrency, accountId, forceSca);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("=== SYSTEM PŁATNOŚCI ===");
+
+        // Płatność przez stary system
+        IPaymentProcessor internalProcessor = new InternalPaymentProcessor();
+        internalProcessor.ProcessPayment("JanKowalski", 150.50);
+
+        // Płatność przez nowe Stripe API przy użyciu adaptera
+        ExternalStripeService stripeService = new ExternalStripeService();
+        IPaymentProcessor adapterProcessor = new StripeAdapter(stripeService);
+        
+        adapterProcessor.ProcessPayment("AnnaNowak", 399.99);
+    }
+}
