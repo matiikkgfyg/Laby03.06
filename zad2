@@ -11,6 +11,7 @@ public class InternalPaymentProcessor : IPaymentProcessor
     {
         Console.WriteLine($"[Stary System] Przetworzono płatność: Użytkownik: {user}, Kwota: {amount} PLN");
     }
+} // <--- TUTAJ BRAKOWAŁO TEJ KLAMRY ZAMYKAJĄCEJ
 
 public class ExternalStripeService
 {
@@ -19,6 +20,7 @@ public class ExternalStripeService
         Console.WriteLine($"[Stripe API] Transakcja zakończona. AccountId: {accountId}, Kwota: {totalCurrency}, SCA: {forceSca}");
     }
 }
+
 public class StripeAdapter : IPaymentProcessor
 {
     private readonly ExternalStripeService _stripeService;
