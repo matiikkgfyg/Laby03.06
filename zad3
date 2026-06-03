@@ -40,11 +40,11 @@ public class Level1Support : SupportHandler
     {
         if (ticket.Severity == Severity.Low)
         {
-            Console.WriteLine($"[Level 1 - Konsultant] Rozwiązano problem: {ticket.Description} (Zgłoszenie #{ticket.Id})");
+            Console.WriteLine($"[Level 1 - Konsultant] Rozwiązano problem: {ticket.Description} (Zgloszenie #{ticket.Id})");
         }
         else
         {
-            Console.WriteLine($"[Level 1 - Konsultant] Brak uprawnień do zgłoszenia #{ticket.Id}. Przekazuję dalej...");
+            Console.WriteLine($"[Level 1 - Konsultant] Brak uprawnień do zgloszenia #{ticket.Id}. Przekazuję dalej...");
             base.HandleTicket(ticket);
         }
     }
@@ -56,7 +56,7 @@ public class Level2Support : SupportHandler
     {
         if (ticket.Severity == Severity.Medium || ticket.Cost < 1000m)
         {
-            Console.WriteLine($"[Level 2 - Inżynier] Rozwiązano problem: {ticket.Description} (Zgłoszenie #{ticket.Id}, Koszt: {ticket.Cost} PLN)");
+            Console.WriteLine($"[Level 2 - Inżynier] Rozwiazano problem: {ticket.Description} (Zgłoszenie #{ticket.Id}, Koszt: {ticket.Cost} PLN)");
         }
         else
         {
@@ -70,7 +70,7 @@ public class DirectorSupport : SupportHandler
 {
     public override void HandleTicket(Ticket ticket)
     {
-        Console.WriteLine($"[Level 3 - Dyrektor IT] Ostatecznie zamknięto zgłoszenie: {ticket.Description} (Zgłoszenie #{ticket.Id}, Koszt: {ticket.Cost} PLN)");
+        Console.WriteLine($"[Level 3 - Dyrektor IT] Ostatecznie zamknieto zgloszenie: {ticket.Description} (Zgloszenie #{ticket.Id}, Koszt: {ticket.Cost} PLN)");
     }
 }
 
@@ -87,14 +87,14 @@ class Program
         consultant.SetNext(engineer).SetNext(director);
         var tickets = new[]
         {
-            new Ticket { Id = 1, Description = "Reset hasła do poczty", Severity = Severity.Low, Cost = 0m },
+            new Ticket { Id = 1, Description = "Reset hasla do poczty", Severity = Severity.Low, Cost = 0m },
             new Ticket { Id = 2, Description = "Instalacja oprogramowania biurowego", Severity = Severity.Medium, Cost = 150m },
             new Ticket { Id = 3, Description = "Awaria serwera bazy danych", Severity = Severity.High, Cost = 500m },
             new Ticket { Id = 4, Description = "Zakup nowych stacji roboczych (min. 4)", Severity = Severity.High, Cost = 15000m }
         };
         foreach (var ticket in tickets)
         {
-            Console.WriteLine($"\n--- Zgłoszenie #{ticket.Id} ---");
+            Console.WriteLine($"\n--- Zgloszenie #{ticket.Id} ---");
             consultant.HandleTicket(ticket);
         }
     }
